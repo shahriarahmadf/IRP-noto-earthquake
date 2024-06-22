@@ -1,2 +1,15 @@
 ipykernel
 virtualenv
+pandas
+folium
+geopandas
+shapely
+matplotlib
+plotly
+notebook
+ipywidgets
+jupyterlab
+nbformat
+kaleido
+jupyter_contrib_nbextensions
+jupyter_nbextensions_configurator
