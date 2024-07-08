@@ -45,7 +45,7 @@ def ishikawa_region_mapper():
     folium.GeoJson(
         jpn_adm2_dissolved_geojson,
         name='Boundary',
-        style_function=lambda x: {'fillColor': '#3366cc', 'color': '#3366cc', 'weight': 0.3, 'fillOpacity': 0.2}  # Adjust fillOpacity here
+        style_function=lambda x: {'fillColor': '#3366cc', 'color': '#3366cc', 'weight': 0.3, 'fillOpacity': 0}  # Adjust fillOpacity here
     ).add_to(map)
 
     return map, jpn_adm2_dissolved

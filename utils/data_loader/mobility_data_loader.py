@@ -5,6 +5,25 @@ import geopandas as gpd
 import os 
 from datetime import datetime
 from decode_mesh_code import get_home_locations
+from utils.calculations.distance_between_two_locations import haversine_distance
+
+# Function to calculate distance between origin and home (oh) or destination and home (dh)
+def calculate_distance(row, point_type):
+    if pd.isnull(row['poi_home']):
+        return pd.NA  # Return NaN if poi_home is NaN
+
+    if point_type == 'oh':  # Origin to Home
+        if row['mesh_o'] == row['poi_home']:
+            return 0
+        else:
+            return haversine_distance(row['latitude_o'], row['longitude_o'],
+                                      row['latitude_h'], row['longitude_h'])
+    elif point_type == 'dh':  # Destination to Home
+        if row['mesh_d'] == row['poi_home']:
+            return 0
+        else:
+            return haversine_distance(row['latitude_d'], row['longitude_d'],
+                                      row['latitude_h'], row['longitude_h'])
 
 def mobility_data_loader(start_date='20240101', end_date='20240101'):
     """
@@ -41,11 +60,11 @@ def mobility_data_loader(start_date='20240101', end_date='20240101'):
             # Decode home work mesh to locations
             df = get_home_locations(df)
 
-            # # Drop home and work mesh columns
-            df.drop(columns=['poi_home'], inplace=True)
-            df.drop(columns=['poi_work'], inplace=True)
-            df.drop(columns=['mesh_o'], inplace=True)
-            df.drop(columns=['mesh_d'], inplace=True)
+            # # # Drop home and work mesh columns
+            # df.drop(columns=['poi_home'], inplace=True)
+            # df.drop(columns=['poi_work'], inplace=True)
+            # df.drop(columns=['mesh_o'], inplace=True)
+            # df.drop(columns=['mesh_d'], inplace=True)
 
 
             # # Create geometry for points
@@ -67,6 +86,23 @@ def mobility_data_loader(start_date='20240101', end_date='20240101'):
             # # # Drop columns that are no longer needed
             # columns_to_drop = ['latitude_o', 'longitude_o', 'latitude_d', 'longitude_d', 'latitude_h', 'longitude_h', 'latitude_w', 'longitude_w']
             # gdf.drop(columns=columns_to_drop, inplace=True)
+
+                        
+            # Apply the function to create new columns
+            df['distance_oh'] = df.apply(lambda row: calculate_distance(row, 'oh'), axis=1)
+            df['distance_dh'] = df.apply(lambda row: calculate_distance(row, 'dh'), axis=1)
+
+            # Calculate distance between origin and destination (od)
+            df['distance_od'] = df.apply(lambda row: haversine_distance(row['latitude_o'], row['longitude_o'],
+                                                                        row['latitude_d'], row['longitude_d']), axis=1)
+
+            # Optionally, you can round distances for clarity
+            df['distance_oh'] = df['distance_oh'].round(2)
+            df['distance_dh'] = df['distance_dh'].round(2)
+            df['distance_od'] = df['distance_od'].round(2)
+
+            # Sort
+            df = df.sort_values(by=['common_id', 'depart_time_o'])
 
             dataframe_dict[file_name[:8]] = df
 
