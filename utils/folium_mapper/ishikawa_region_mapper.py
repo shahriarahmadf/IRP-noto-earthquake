@@ -12,7 +12,7 @@ def ishikawa_region_mapper():
 
     # Replace 'path_to_your_shapefile.shp' with the actual path to your shapefile
     jpn_adm2 = gpd.read_file('E:\\IRP_noto_earthquake\\data\\raw\\jpn_adm\\jpn_adm_2019_shp\\jpn_admbnda_adm2_2019.shp')
-    jpn_adm2.crs = 'EPSG:3857'
+    jpn_adm2.crs = 'EPSG:4612'
 
     # Filter specific administrative units
     jpn_adm2 = jpn_adm2[

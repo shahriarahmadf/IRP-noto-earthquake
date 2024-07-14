@@ -11,8 +11,8 @@ def data_travel_filter_by_region(df, shapefile):
     geometry_origin = [Point(xy) for xy in zip(df['longitude_o'], df['latitude_o'])]
     geometry_destination = [Point(xy) for xy in zip(df['longitude_d'], df['latitude_d'])]
 
-    gdf_origin = gpd.GeoDataFrame(df, geometry=geometry_origin, crs='EPSG:3857')
-    gdf_destination = gpd.GeoDataFrame(df, geometry=geometry_destination, crs='EPSG:3857')
+    gdf_origin = gpd.GeoDataFrame(df, geometry=geometry_origin, crs='EPSG:4612')
+    gdf_destination = gpd.GeoDataFrame(df, geometry=geometry_destination, crs='EPSG:4612')
 
     # Spatial join with GeoJSON shapefile
     gdf_origin_within_shape = gpd.sjoin(gdf_origin, shapefile, op='within', how='inner')

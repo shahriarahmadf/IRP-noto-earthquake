@@ -6,6 +6,7 @@ import os
 from datetime import datetime
 from decode_mesh_code import get_home_locations
 from utils.calculations.distance_between_two_locations import haversine_distance
+from utils.data_processer.mesh_code_processer import mesh_center
 
 # Function to calculate distance between origin and home (oh) or destination and home (dh)
 def calculate_distance(row, point_type):
@@ -24,6 +25,17 @@ def calculate_distance(row, point_type):
         else:
             return haversine_distance(row['latitude_d'], row['longitude_d'],
                                       row['latitude_h'], row['longitude_h'])
+        
+
+# def get_home_locations(df):
+#     """
+#     This is the function to call.
+#     """
+#     # Apply the function to the 'poi_home' column and create new columns 'latitude_h' and 'longitude_h'
+#     df[['latitude_h', 'longitude_h']] = df['poi_home'].apply(lambda x: pd.Series(mesh_center(x)))
+#     df[['latitude_w', 'longitude_w']] = df['poi_work'].apply(lambda x: pd.Series(mesh_center(x)))
+
+#     return df
 
 def mobility_data_loader(start_date='20240101', end_date='20240101'):
     """
@@ -74,7 +86,7 @@ def mobility_data_loader(start_date='20240101', end_date='20240101'):
             # geometry_w = [Point(xy) if pd.notna(xy[0]) and pd.notna(xy[1]) else None for xy in zip(df['longitude_w'], df['latitude_w'])]
 
             # # Create GeoDataFrame
-            # crs = "EPSG:3857"  # WGS84 coordinate system
+            # crs = "EPSG:4612"  # WGS84 coordinate system
             # gdf = gpd.GeoDataFrame(df, crs=crs, geometry=geometry_o)  # Use geometry_o for origin points
             # gdf = gdf.rename_geometry('geometry_o')  # Rename the geometry column to 'geometry_o'
 
